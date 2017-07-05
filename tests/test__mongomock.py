@@ -256,6 +256,14 @@ class MongoClientCollectionTest(_CollectionComparisonTest):
 
             self.cmp.do.remove({'_id': doc_id})
 
+    def test__insert_from_aggregation(self):
+        # cannot use self.cmp since input is CommandCursor (hence cannot be copied)
+        self.cmp.do.insert({"a": 1, "count": 1})
+        self.cmp.do.insert({"a": 1, "count": 2})
+        aggr_res = self.fake_collection.aggregate([{"$group": {"_id": "$a", "nb": {"$sum": "$count"}}}])
+        self.fake_collection.insert(aggr_res)
+        assert self.fake_collection.count({"nb": {"$exists": 1}}) == 1
+
     def test__count(self):
         self.cmp.compare.count()
         self.cmp.do.insert({"a": 1})

@@ -314,7 +314,7 @@ class Collection(object):
             raise BulkWriteError('batch op errors occurred')
 
     def _insert(self, data):
-        if isinstance(data, list):
+        if isinstance(data, list) or isinstance(data, CommandCursor):
             return [self._insert(item) for item in data]
 
         if not all(isinstance(k, string_types) for k in data):
