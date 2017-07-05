@@ -1243,6 +1243,12 @@ class MongoClientCollectionTest(_CollectionComparisonTest):
             {'name': 'bob'}, {'$push': {'hat': {'$each': ['wide', 'blue']}}})
         self.cmp.compare.find({'name': 'bob'})
 
+    def test__update_filtering_on_exists(self):
+        # update filtering on $exists when no document is returned
+        self.cmp.do.update(
+            {'name': {"$exists": 1}}, {'$set': {"a": 1}}, upsert=True)
+        self.cmp.compare.find({'name': 'bob'})
+
     def test__drop(self):
         self.cmp.do.insert({"name": "another new"})
         self.cmp.do.drop()

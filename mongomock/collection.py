@@ -696,7 +696,9 @@ class Collection(object):
 
     def _discard_operators(self, doc):
         # TODO(this looks a little too naive...)
-        return {k: v for k, v in iteritems(doc) if not k.startswith("$")}
+        return {k: v for k, v in iteritems(doc)
+                if not k.startswith("$")
+                and (type(v) is not dict or not v.keys()[0].startswith("$"))}
 
     def find(self, filter=None, projection=None, skip=0, limit=0,
              no_cursor_timeout=False, cursor_type=None, sort=None,
